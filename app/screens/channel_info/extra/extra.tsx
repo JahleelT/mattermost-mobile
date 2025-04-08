@@ -130,19 +130,25 @@ const Extra = ({channelId, createdAt, createdBy, customStatus, header, isCustomS
                             defaultMessage: 'Copy header text',
                         })}
                     />
-                    {Boolean(url) && (
-                        <SlideUpPanelItem
-                            leftIcon='link-variant'
-                            onPress={() => {
-                                onCopy(url!, true);
-                            }}
-                            testID={`${headerTestId}.bottom_sheet.copy_url`}
-                            text={intl.formatMessage({
-                                id: 'mobile.markdown.link.copy_url',
-                                defaultMessage: 'Copy URL',
-                            })}
-                        />
-                    )}
+                    {Boolean(url) && (function() {
+                        const isEmail = url?.toLowerCase().startsWith('mailto:');
+                        const messageId = isEmail ? 'mobile.markdown.link.copy_email' : 'mobile.markdown.link.copy_url';
+                        const defaultMessage = isEmail ? 'Copy Email Address' : 'Copy URL';
+                        
+                        return (
+                            <SlideUpPanelItem
+                                leftIcon='link-variant'
+                                onPress={() => {
+                                    onCopy(url!, true);
+                                }}
+                                testID={`${headerTestId}.bottom_sheet.${isEmail ? 'copy_email' : 'copy_url'}`}
+                                text={intl.formatMessage({
+                                    id: messageId,
+                                    defaultMessage,
+                                })}
+                            />
+                        );
+                    })()}
                     <SlideUpPanelItem
                         destructive={true}
                         leftIcon='cancel'
